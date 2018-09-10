@@ -3,7 +3,8 @@ $(document).ready(function () {
     var topics = ["Mario", "Luigi", "Yoshi", "Donkey Kong", "Princess Peach", "Bomberman",
         "Koopa Troopa", "Bowser", "Zelda", "Link", "Ganondorf", "Samus", "Kirby"];
 
-
+    var topic;
+    var counter =10;
 
 
     function genButtons() {
@@ -20,9 +21,9 @@ $(document).ready(function () {
    
     genButtons();
 
-    $(document).on("click",".topic-button", function () {
+    $(document).on("click",".topic-button", function() {
         $("#gifDisplay").empty();
-        var topic = $(this).attr("data-topic")
+        topic = $(this).attr("data-topic")
         var url = "https://api.giphy.com/v1/gifs/search?api_key=AHLrkkPuIsMOt9ym2MPRK9UVlIyIsH1A&q=" + topic + "&limit=10&rating=pg-13";
         $.ajax({
             url: url,
@@ -64,4 +65,32 @@ $(document).ready(function () {
         topics.push(newTopic);
         genButtons();
     })
+    $("#more").on("click", function() {
+         topic
+         url = "https://api.giphy.com/v1/gifs/search?api_key=AHLrkkPuIsMOt9ym2MPRK9UVlIyIsH1A&q=" + topic + "&limit=10&rating=pg-13&offset=" + counter +"";
+        $.ajax({
+            url: url,
+            method: "GET",
+        }).then(function (response) {
+            var results = response.data;
+            for (j = 0; j < results.length; j++) {
+                var gifDiv = $("<div>");
+                gifDiv.addClass("col-md-3 ml-2 mb-2");
+                var p = $("<p>");
+                p.addClass("ml-1 text-center bg-info text-light")
+                p.text(results[j].rating);
+                var gif = $("<img>");
+                gif.addClass("gif");
+                gif.attr("src", results[j].images.fixed_height_still.url)
+                gif.attr("data-state", "still");
+                gif.attr("data-still", results[j].images.fixed_height_still.url);
+                gif.attr("data-animate", results[j].images.fixed_height.url);
+                gifDiv.prepend(gif);
+                gifDiv.prepend(p);
+                $("#gifDisplay").append(gifDiv);
+               
+    }})
+    counter += 10;
+    console.log(counter);
 })
+    })
